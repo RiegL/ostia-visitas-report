@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { Minister, AuthContext as AuthContextType } from "@/types";
-import { ministerService } from "@/services/mockData";
+import { ministerService } from "@/services/ministerService";
 import { toast } from "sonner";
 
 const AuthContext = createContext<AuthContextType>({
