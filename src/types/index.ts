@@ -16,8 +16,15 @@ export interface Minister {
   id: string;
   name: string;
   phone: string;
-  username?: string;
+  email?: string;
+  username: string;
   password?: string;
+  role?: 'admin' | 'minister';
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  lastLogin?: string;
+  profileImage?: string;
 }
 
 export interface AuthContext {

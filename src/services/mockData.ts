@@ -1,3 +1,4 @@
+
 import { Patient, Minister } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -51,15 +52,29 @@ let ministers: Minister[] = [
     id: "1",
     name: "Pedro Alves",
     phone: "9999-1111",
+    email: "pedro.alves@igreja.org",
     username: "pedro",
     password: "123456",
+    role: "admin",
+    isActive: true,
+    createdAt: new Date(2023, 0, 10).toISOString(),
+    updatedAt: new Date(2023, 0, 10).toISOString(),
+    lastLogin: new Date(2023, 5, 15).toISOString(),
+    profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
   },
   {
     id: "2",
     name: "Marta Souza",
     phone: "8888-2222",
+    email: "marta.souza@igreja.org",
     username: "marta",
     password: "123456",
+    role: "minister",
+    isActive: true,
+    createdAt: new Date(2023, 1, 15).toISOString(),
+    updatedAt: new Date(2023, 1, 15).toISOString(),
+    lastLogin: new Date(2023, 6, 20).toISOString(),
+    profileImage: "https://randomuser.me/api/portraits/women/1.jpg",
   },
 ];
 
