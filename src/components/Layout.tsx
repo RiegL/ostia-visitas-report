@@ -1,11 +1,12 @@
 
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Home, Users, PlusCircle, FileText, Menu, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Home, Users, PlusCircle, FileText, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,6 +15,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const { minister, logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   const navItems = [
@@ -26,6 +29,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   return (
@@ -56,6 +64,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="px-4 py-6">
             <h1 className="text-2xl font-bold">Visitas Pastorais</h1>
             <p className="text-sm opacity-80">Sistema de relatórios</p>
+            {minister && (
+              <p className="mt-2 text-sm font-medium">Olá, {minister.name}</p>
+            )}
           </div>
 
           <Separator className="bg-white/20" />
@@ -84,8 +95,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </nav>
           </ScrollArea>
 
-          <div className="px-4 py-3">
-            <p className="text-center text-xs text-white/60">
+          <div className="border-t border-white/10 px-4 py-3">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-2 h-5 w-5" />
+              Sair
+            </Button>
+            <p className="mt-3 text-center text-xs text-white/60">
               &copy; {new Date().getFullYear()} Ministério Pastoral
             </p>
           </div>

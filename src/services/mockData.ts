@@ -1,4 +1,3 @@
-
 import { Patient, Minister } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -52,11 +51,15 @@ let ministers: Minister[] = [
     id: "1",
     name: "Pedro Alves",
     phone: "9999-1111",
+    username: "pedro",
+    password: "123456",
   },
   {
     id: "2",
     name: "Marta Souza",
     phone: "8888-2222",
+    username: "marta",
+    password: "123456",
   },
 ];
 
@@ -146,4 +149,9 @@ export const ministerService = {
     ministers.splice(index, 1);
     return Promise.resolve(true);
   },
+  
+  authenticate: (username: string, password: string) => {
+    const minister = ministers.find(m => m.username === username && m.password === password);
+    return Promise.resolve(minister || null);
+  }
 };

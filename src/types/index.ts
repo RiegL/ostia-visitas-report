@@ -16,4 +16,13 @@ export interface Minister {
   id: string;
   name: string;
   phone: string;
+  username?: string;
+  password?: string;
+}
+
+export interface AuthContext {
+  minister: Minister | null;
+  isAuthenticated: boolean;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => void;
 }
