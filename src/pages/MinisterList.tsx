@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import Layout from "@/components/Layout";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import { ministerService } from "@/services/mockData";
 import { Minister } from "@/types";
 import { Pencil, Trash2, User, UserPlus, Phone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const MinisterList = () => {
   const queryClient = useQueryClient();
@@ -21,6 +21,8 @@ const MinisterList = () => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    username: "",
+    profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
   });
 
   const { data: ministers, isLoading } = useQuery({
@@ -36,7 +38,7 @@ const MinisterList = () => {
       queryClient.invalidateQueries({ queryKey: ['ministers'] });
       toast.success("Ministro cadastrado com sucesso");
       setIsAddDialogOpen(false);
-      setFormData({ name: "", phone: "" });
+      setFormData({ name: "", phone: "", username: "", profileImage: "https://randomuser.me/api/portraits/men/2.jpg" });
     },
     onError: () => {
       toast.error("Erro ao cadastrar ministro");
@@ -73,7 +75,7 @@ const MinisterList = () => {
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.phone.trim()) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.username.trim()) {
       toast.error("Preencha todos os campos");
       return;
     }
@@ -83,7 +85,7 @@ const MinisterList = () => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMinister) return;
-    if (!formData.name.trim() || !formData.phone.trim()) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.username.trim()) {
       toast.error("Preencha todos os campos");
       return;
     }
@@ -104,6 +106,8 @@ const MinisterList = () => {
     setFormData({
       name: minister.name,
       phone: minister.phone,
+      username: minister.username,
+      profileImage: minister.profileImage,
     });
     setIsEditDialogOpen(true);
   };
@@ -143,6 +147,30 @@ const MinisterList = () => {
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="Telefone para contato"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="username">Usuário</Label>
+                <Input
+                  id="username"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  placeholder="Nome de usuário para login"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Imagem de Perfil</Label>
+                <div className="flex items-center space-x-4">
+                  <Avatar className="w-16 h-16">
+                    <AvatarImage src={formData.profileImage} alt="Imagem de perfil" />
+                    <AvatarFallback>{formData.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <Input
+                    type="text"
+                    value={formData.profileImage}
+                    onChange={(e) => setFormData({ ...formData, profileImage: e.target.value })}
+                    placeholder="URL da imagem de perfil"
+                  />
+                </div>
               </div>
               <div className="flex justify-end space-x-2 pt-2">
                 <Button 
@@ -226,7 +254,6 @@ const MinisterList = () => {
         </CardContent>
       </Card>
 
-      {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -250,6 +277,30 @@ const MinisterList = () => {
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="Telefone para contato"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-username">Usuário</Label>
+              <Input
+                id="edit-username"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                placeholder="Nome de usuário para login"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Imagem de Perfil</Label>
+              <div className="flex items-center space-x-4">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage src={formData.profileImage} alt="Imagem de perfil" />
+                  <AvatarFallback>{formData.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <Input
+                  type="text"
+                  value={formData.profileImage}
+                  onChange={(e) => setFormData({ ...formData, profileImage: e.target.value })}
+                  placeholder="URL da imagem de perfil"
+                />
+              </div>
             </div>
             <div className="flex justify-end space-x-2 pt-2">
               <Button 
