@@ -1,9 +1,11 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import PermissionRoute from "@/components/PermissionRoute";
 import Index from "./pages/Index";
 import PatientList from "./pages/PatientList";
 import PatientDetails from "./pages/PatientDetails";
@@ -46,7 +48,14 @@ const AppRoutes = () => {
       <Route path="/patients/new" element={<ProtectedRoute><NewPatient /></ProtectedRoute>} />
       <Route path="/patients/:id" element={<ProtectedRoute><PatientDetails /></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
-      <Route path="/ministers" element={<ProtectedRoute><MinisterList /></ProtectedRoute>} />
+      <Route 
+        path="/ministers" 
+        element={
+          <PermissionRoute permission="manage_ministers">
+            <MinisterList />
+          </PermissionRoute>
+        } 
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

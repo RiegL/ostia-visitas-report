@@ -16,16 +16,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { minister, logout } = useAuth();
+  const { minister, logout, hasPermission } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  const navItems = [
-    { icon: Home, label: "Início", path: "/" },
-    { icon: Users, label: "Pacientes", path: "/patients" },
-    { icon: PlusCircle, label: "Novo Paciente", path: "/patients/new" },
-    { icon: FileText, label: "Relatórios", path: "/reports" },
-    { icon: Users, label: "Ministros", path: "/ministers" },
-  ];
+  const getNavItems = () => {
+    const items = [
+      { icon: Home, label: "Início", path: "/" },
+      { icon: Users, label: "Pacientes", path: "/patients" },
+      { icon: PlusCircle, label: "Novo Paciente", path: "/patients/new" },
+      { icon: FileText, label: "Relatórios", path: "/reports" },
+    ];
+    
+    // Adicionar o item de Ministros apenas se o usuário tiver permissão
+    if (hasPermission('manage_ministers')) {
+      items.push({ icon: Users, label: "Ministros", path: "/ministers" });
+    }
+    
+    return items;
+  };
+
+  const navItems = getNavItems();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -65,7 +75,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <h1 className="text-2xl font-bold">Visitas Pastorais</h1>
             <p className="text-sm opacity-80">Sistema de relatórios</p>
             {minister && (
-              <p className="mt-2 text-sm font-medium">Olá, {minister.name}</p>
+              <p className="mt-2 text-sm font-medium">
+                Olá, {minister.name}
+                {minister.role === 'admin' && <span className="ml-1 text-xs">(Admin)</span>}
+              </p>
             )}
           </div>
 
