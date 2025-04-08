@@ -25,8 +25,9 @@ export const patientService = {
       id: patient.id,
       name: patient.name,
       address: patient.address || '',
-      district: patient.distric || '', // Observe que há um erro de digitação na coluna do banco de dados
-      phones: Array.isArray(patient.phones) ? patient.phones : (patient.phones ? [patient.phones] : []),
+      district: patient.distric || '', // Note a diferença: 'distric' no BD, 'district' na app
+      phones: Array.isArray(patient.phones) ? patient.phones : 
+              (patient.phones ? [patient.phones.toString()] : []),
       status: (patient.status as PatientStatus) || 'active',
       createdAt: patient.created_at || new Date().toISOString(),
       updatedAt: patient.update_at || new Date().toISOString()
@@ -39,12 +40,9 @@ export const patientService = {
       .from('patients')
       .select('*')
       .eq('id', id)
-      .single();
+      .maybeSingle();
     
     if (error) {
-      if (error.code === 'PGRST116') { // Código de erro "não encontrado"
-        return null;
-      }
       console.error('Erro ao buscar paciente:', error);
       throw error;
     }
@@ -56,8 +54,9 @@ export const patientService = {
       id: data.id,
       name: data.name,
       address: data.address || '',
-      district: data.distric || '', // Observe que há um erro de digitação na coluna
-      phones: Array.isArray(data.phones) ? data.phones : (data.phones ? [data.phones] : []),
+      district: data.distric || '', // Note a diferença: 'distric' no BD, 'district' na app
+      phones: Array.isArray(data.phones) ? data.phones : 
+              (data.phones ? [data.phones.toString()] : []),
       status: (data.status as PatientStatus) || 'active',
       createdAt: data.created_at || new Date().toISOString(),
       updatedAt: data.update_at || new Date().toISOString()
@@ -71,8 +70,8 @@ export const patientService = {
       id: uuidv4(),
       name: patientData.name,
       address: patientData.address,
-      distric: patientData.district, // Observe a diferença no nome da coluna
-      phones: patientData.phones,
+      distric: patientData.district, // Note a diferença: 'distric' no BD, 'district' na app
+      phones: patientData.phones, // Convertemos o array para string no banco
       status: patientData.status || 'active',
       created_at: now,
       update_at: now
@@ -95,7 +94,8 @@ export const patientService = {
       name: data.name,
       address: data.address || '',
       district: data.distric || '',
-      phones: Array.isArray(data.phones) ? data.phones : (data.phones ? [data.phones] : []),
+      phones: Array.isArray(data.phones) ? data.phones : 
+              (data.phones ? [data.phones.toString()] : []),
       status: (data.status as PatientStatus) || 'active',
       createdAt: data.created_at,
       updatedAt: data.update_at
@@ -104,10 +104,10 @@ export const patientService = {
   
   // Atualizar um paciente existente
   update: async (id: string, patientData: PatientUpdate): Promise<Patient> => {
-    const updateData = {
+    const updateData: any = {
       ...(patientData.name && { name: patientData.name }),
       ...(patientData.address && { address: patientData.address }),
-      ...(patientData.district && { distric: patientData.district }), // Observe a diferença no nome da coluna
+      ...(patientData.district && { distric: patientData.district }), // Note a diferença
       ...(patientData.phones && { phones: patientData.phones }),
       ...(patientData.status && { status: patientData.status }),
       update_at: new Date().toISOString()
@@ -131,7 +131,8 @@ export const patientService = {
       name: data.name,
       address: data.address || '',
       district: data.distric || '',
-      phones: Array.isArray(data.phones) ? data.phones : (data.phones ? [data.phones] : []),
+      phones: Array.isArray(data.phones) ? data.phones : 
+              (data.phones ? [data.phones.toString()] : []),
       status: (data.status as PatientStatus) || 'active',
       createdAt: data.created_at,
       updatedAt: data.update_at

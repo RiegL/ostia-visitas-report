@@ -15,7 +15,7 @@ export type Database = {
           email: string | null
           id: number
           isActive: boolean | null
-          lasLogin: string | null
+          lastLogin: string | null
           name: string | null
           password: string | null
           phone: string | null
@@ -28,7 +28,7 @@ export type Database = {
           email?: string | null
           id?: number
           isActive?: boolean | null
-          lasLogin?: string | null
+          lastLogin?: string | null
           name?: string | null
           password?: string | null
           phone?: string | null
@@ -41,7 +41,7 @@ export type Database = {
           email?: string | null
           id?: number
           isActive?: boolean | null
-          lasLogin?: string | null
+          lastLogin?: string | null
           name?: string | null
           password?: string | null
           phone?: string | null
@@ -53,29 +53,32 @@ export type Database = {
       }
       patients: {
         Row: {
+          address: string | null
           created_at: string | null
-          distric: string | null
+          district: string | null
           id: string
           name: string
-          phones: string | null
+          phones: string[] | null
           status: string | null
           update_at: string | null
         }
         Insert: {
+          address?: string | null
           created_at?: string | null
-          distric?: string | null
+          district?: string | null
           id?: string
           name: string
-          phones?: string | null
+          phones?: string[] | null
           status?: string | null
           update_at?: string | null
         }
         Update: {
+          address?: string | null
           created_at?: string | null
-          distric?: string | null
+          district?: string | null
           id?: string
           name?: string
-          phones?: string | null
+          phones?: string[] | null
           status?: string | null
           update_at?: string | null
         }
