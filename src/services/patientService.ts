@@ -1,158 +1,138 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Patient, PatientStatus } from "@/types";
-import { v4 as uuidv4 } from "uuid";
+import { Minister } from "@/types";
 
-export const patientService = {
-  // Buscar todos os pacientes
-  getAll: async (): Promise<Patient[]> => {
+export const ministerService = {
+  // Buscar todos os ministros
+  getAll: async (): Promise<Minister[]> => {
     const { data, error } = await supabase
-      .from('patients')
+      .from('minister')
       .select('*');
     
     if (error) {
-      console.error('Erro ao buscar pacientes:', error);
+      console.error('Erro ao buscar ministros:', error);
       throw error;
     }
     
-    return (data || []).map(patient => ({
-      id: patient.id,
-      name: patient.name,
-      // Lidar com o fato de que address não existe no banco, usando distric como substituto
-      address: patient.address || patient.distric || '',
-      district: patient.district || patient.distric || '',
-      // Converter phones de string para array de strings se necessário
-      phones: Array.isArray(patient.phones) ? patient.phones : 
-        (typeof patient.phones === 'string' ? [patient.phones] : []),
-      status: (patient.status as PatientStatus) || 'active',
-      createdAt: patient.created_at || new Date().toISOString(),
-      updatedAt: patient.update_at || new Date().toISOString()
+    return (data || []).map(minister => ({
+      id: minister.id,
+      name: minister.name || '',
+      phone: minister.phone || '',
+      email: minister.email,
+      username: minister.username || '',
+      role: minister.role === 'admin' ? 'admin' : 'user',
+      isActive: minister.isActive ?? true,
+      createdAt: minister.created_at,
+      updatedAt: minister.update_at,
+      lastLogin: minister.lastLogin,
+      profileImage: undefined
     }));
   },
   
-  // Buscar um paciente pelo ID
-  getById: async (id: string): Promise<Patient | null> => {
+  // Autenticar um ministro
+  authenticate: async (username: string, password: string): Promise<Minister | null> => {
+    // Buscar ministro pelo nome de usuário
+    console.log("Tentando logar com:", { username, password });
     const { data, error } = await supabase
-      .from('patients')
+      .from('minister')
       .select('*')
-      .eq('id', id)
+      .eq('username', username)
+      .eq('password', password) // Nota: Em produção, use hash de senha!
       .single();
     
-    if (error) {
-      console.error(`Erro ao buscar paciente com ID ${id}:`, error);
+    if (error || !data) {
+      console.error('Erro de autenticação:', error);
       return null;
     }
     
-    if (!data) return null;
-    
+    // Atualizar último login
+    await supabase
+      .from('minister')
+      .update({ lastLogin: new Date().toISOString() })
+      .eq('id', data.id);
     return {
       id: data.id,
-      name: data.name,
-      address: data.address || data.distric || '',
-      district: data.district || data.distric || '',
-      phones: Array.isArray(data.phones) ? data.phones : 
-        (typeof data.phones === 'string' ? [data.phones] : []),
-      status: (data.status as PatientStatus) || 'active',
-      createdAt: data.created_at || new Date().toISOString(),
-      updatedAt: data.update_at || new Date().toISOString()
+      name: data.name || '',
+      phone: data.phone || '',
+      email: data.email,
+      username: data.username || '',
+      role: data.role === 'admin' ? 'admin' : 'user',
+      isActive: data.isActive ?? true,
+      createdAt: data.created_at,
+      updatedAt: data.update_at,
+      lastLogin: data.lastLogin,
+      profileImage: undefined
     };
   },
+
+    // Criar um novo ministro
+    create: async (data: Omit<Minister, 'id'>): Promise<Minister> => {
+      const { error, data: inserted } = await supabase
+        .from('minister')
+        .insert([data])
+        .select()
+        .single();
+      
+      if (error || !inserted) {
+        console.error("Erro ao criar ministro:", error);
+        throw error;
+      }
   
-  // Criar um novo paciente
-  create: async (patient: Omit<Patient, 'id' | 'createdAt' | 'updatedAt'>): Promise<Patient> => {
-    const now = new Date().toISOString();
-    const newPatient = {
-      id: uuidv4(),
-      ...patient,
-      // Usar distric em vez de address já que o campo no banco é distric
-      distric: patient.district || patient.address, // mapeando para o campo correto no banco
-      // Converter array de telefones para string se necessário
-      phones: patient.phones,
-      status: patient.status || 'active',
-      created_at: now,
-      update_at: now
-    };
-    
-    const { data, error } = await supabase
-      .from('patients')
-      .insert({
-        name: newPatient.name,
-        distric: newPatient.distric,
-        // Remover o campo address já que não existe no banco
-        phones: newPatient.phones,
-        status: newPatient.status,
-        created_at: newPatient.created_at,
-        update_at: newPatient.update_at
-      })
-      .select()
-      .single();
-    
-    if (error) {
-      console.error('Erro ao criar paciente:', error);
-      throw error;
-    }
-    
-    return {
-      id: data?.id || newPatient.id,
-      name: data?.name || newPatient.name,
-      address: data?.address || data?.distric || newPatient.distric || '',
-      district: data?.district || data?.distric || newPatient.distric || '',
-      phones: Array.isArray(data?.phones) ? data.phones : 
-        (typeof data?.phones === 'string' ? [data.phones] : newPatient.phones),
-      status: (data?.status as PatientStatus) || newPatient.status,
-      createdAt: data?.created_at || newPatient.created_at,
-      updatedAt: data?.update_at || newPatient.update_at
-    };
-  },
-  
-  // Atualizar um paciente existente
-  update: async (id: string, updates: Partial<Omit<Patient, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Patient> => {
-    const now = new Date().toISOString();
-    
-    const { data, error } = await supabase
-      .from('patients')
-      .update({
-        name: updates.name,
-        distric: updates.district || updates.address, // mapeando para o campo correto no banco
-        // Não incluir address pois não existe no banco
-        phones: updates.phones,
-        status: updates.status,
-        update_at: now
-      })
+      return {
+        id: inserted.id,
+        name: inserted.name || '',
+        phone: inserted.phone || '',
+        email: inserted.email,
+        username: inserted.username || '',
+        role: inserted.role === 'admin' ? 'admin' : 'user',
+        isActive: inserted.isActive ?? true,
+        createdAt: inserted.created_at,
+        updatedAt: inserted.update_at,
+        lastLogin: inserted.lastLogin,
+      };
+    },
+
+     // Atualizar um ministro existente
+  update: async (id: number, updates: Partial<Omit<Minister, 'id'>>): Promise<Minister> => {
+    const { error, data: updated } = await supabase
+      .from('minister')
+      .update(updates)
       .eq('id', id)
       .select()
       .single();
-    
-    if (error) {
-      console.error(`Erro ao atualizar paciente com ID ${id}:`, error);
+
+    if (error || !updated) {
+      console.error("Erro ao atualizar ministro:", error);
       throw error;
     }
-    
+
     return {
-      id: data.id,
-      name: data.name,
-      address: data.address || data.distric || '',
-      district: data.district || data.distric || '',
-      phones: Array.isArray(data.phones) ? data.phones : 
-        (typeof data.phones === 'string' ? [data.phones] : []),
-      status: (data.status as PatientStatus) || 'active',
-      createdAt: data.created_at || now,
-      updatedAt: data.update_at || now
+      id: updated.id,
+      name: updated.name || '',
+      phone: updated.phone || '',
+      email: updated.email,
+      username: updated.username || '',
+      role: updated.role === 'admin' ? 'admin' : 'user',
+      isActive: updated.isActive ?? true,
+      createdAt: updated.created_at,
+      updatedAt: updated.update_at,
+      lastLogin: updated.lastLogin,
+      profileImage: undefined
     };
   },
-  
-  // Excluir um paciente
-  delete: async (id: string): Promise<boolean> => {
+
+  // Deletar ministro por ID
+  delete: async (id: number): Promise<void> => {
     const { error } = await supabase
-      .from('patients')
+      .from('minister')
       .delete()
       .eq('id', id);
-    
+  
     if (error) {
-      console.error(`Erro ao excluir paciente com ID ${id}:`, error);
+      console.error("Erro ao deletar ministro:", error);
       throw error;
     }
-    
-    return true;
-  }
+  },
+  
+
 };

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
-import { patientService } from "@/services/mockData";
+import { patientService } from "@/services/patientService";
 import { X, Plus } from "lucide-react";
 
 interface PatientFormProps {

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { patientService } from "@/services/mockData";
+import { patientService } from "@/services/patientService";
 import { toast } from "sonner";
 import { ArrowLeft, Phone, MapPin, User, Pencil } from "lucide-react";
 import { format, parseISO } from "date-fns";

@@ -13,13 +13,13 @@ export interface Patient {
 }
 
 export interface Minister {
-  id: string;
+  id: number;
   name: string;
   phone: string;
   email?: string;
   username: string;
   password?: string;
-  role?: 'admin' | 'minister';
+  role?: 'admin' | 'user';
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;

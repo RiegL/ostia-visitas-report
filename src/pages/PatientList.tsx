@@ -9,7 +9,7 @@ import { PlusCircle, Search, User, Phone } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useQuery } from "@tanstack/react-query";
-import { patientService } from "@/services/mockData";
+import { patientService } from "@/services/patientService";
 import { Patient, PatientStatus } from "@/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 

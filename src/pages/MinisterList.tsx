@@ -7,38 +7,52 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ministerService } from "@/services/mockData";
+import { ministerService } from "@/services/ministerService";
 import { Minister } from "@/types";
-import { Pencil, Trash2, User, UserPlus, Phone } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Pencil, Trash2, User, UserPlus, Phone, Shield} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+type MinisterFormData = {
+  name: string;
+  phone: string;
+  username: string;
+  role: "admin" | "user";
+  password: string;
+};
 
 const MinisterList = () => {
   const queryClient = useQueryClient();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedMinister, setSelectedMinister] = useState<Minister | null>(null);
-  const [formData, setFormData] = useState({
+  const [selectedMinister, setSelectedMinister] = useState<Minister | null>(
+    null
+  );
+  const [formData, setFormData] = useState<MinisterFormData>({
     name: "",
     phone: "",
     username: "",
-    profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
+    role: "user",
+    password: "",
   });
 
   const { data: ministers, isLoading } = useQuery({
-    queryKey: ['ministers'],
+    queryKey: ["ministers"],
     queryFn: ministerService.getAll,
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: Omit<Minister, 'id'>) => {
-      return ministerService.create(data);
-    },
+    mutationFn: (data: Omit<Minister, "id">) => ministerService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ministers'] });
+      queryClient.invalidateQueries({ queryKey: ["ministers"] });
       toast.success("Ministro cadastrado com sucesso");
       setIsAddDialogOpen(false);
-      setFormData({ name: "", phone: "", username: "", profileImage: "https://randomuser.me/api/portraits/men/2.jpg" });
+      setFormData({ name: "", phone: "", username: "", role: "user" });
     },
     onError: () => {
       toast.error("Erro ao cadastrar ministro");
@@ -46,11 +60,12 @@ const MinisterList = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; updates: Partial<Omit<Minister, 'id'>> }) => {
-      return ministerService.update(data.id, data.updates);
-    },
+    mutationFn: (data: {
+      id: number;
+      updates: Partial<Omit<Minister, "id">>;
+    }) => ministerService.update(data.id, data.updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ministers'] });
+      queryClient.invalidateQueries({ queryKey: ["ministers"] });
       toast.success("Ministro atualizado com sucesso");
       setIsEditDialogOpen(false);
       setSelectedMinister(null);
@@ -61,11 +76,9 @@ const MinisterList = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => {
-      return ministerService.delete(id);
-    },
+    mutationFn: (id: number) => ministerService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['ministers'] });
+      queryClient.invalidateQueries({ queryKey: ["ministers"] });
       toast.success("Ministro removido com sucesso");
     },
     onError: () => {
@@ -75,7 +88,12 @@ const MinisterList = () => {
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.username.trim()) {
+    if (
+      !formData.name.trim() ||
+      !formData.phone.trim() ||
+      !formData.username.trim() ||
+      !formData.role
+    ) {
       toast.error("Preencha todos os campos");
       return;
     }
@@ -85,7 +103,12 @@ const MinisterList = () => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMinister) return;
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.username.trim()) {
+    if (
+      !formData.name.trim() ||
+      !formData.phone.trim() ||
+      !formData.username.trim() ||
+      !formData.role
+    ) {
       toast.error("Preencha todos os campos");
       return;
     }
@@ -95,7 +118,7 @@ const MinisterList = () => {
     });
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     if (window.confirm("Tem certeza que deseja remover este ministro?")) {
       deleteMutation.mutate(id);
     }
@@ -107,15 +130,15 @@ const MinisterList = () => {
       name: minister.name,
       phone: minister.phone,
       username: minister.username,
-      profileImage: minister.profileImage,
+      role: minister.role,
     });
     setIsEditDialogOpen(true);
   };
 
   return (
     <Layout>
-      <PageHeader 
-        title="Ministros" 
+      <PageHeader
+        title="Ministros"
         subtitle="Gerencie os ministros que realizarão as visitas"
       >
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -135,7 +158,9 @@ const MinisterList = () => {
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   placeholder="Nome do ministro"
                 />
               </div>
@@ -144,7 +169,9 @@ const MinisterList = () => {
                 <Input
                   id="phone"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                   placeholder="Telefone para contato"
                 />
               </div>
@@ -153,29 +180,45 @@ const MinisterList = () => {
                 <Input
                   id="username"
                   value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
                   placeholder="Nome de usuário para login"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Imagem de Perfil</Label>
-                <div className="flex items-center space-x-4">
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage src={formData.profileImage} alt="Imagem de perfil" />
-                    <AvatarFallback>{formData.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <Input
-                    type="text"
-                    value={formData.profileImage}
-                    onChange={(e) => setFormData({ ...formData, profileImage: e.target.value })}
-                    placeholder="URL da imagem de perfil"
-                  />
-                </div>
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  placeholder="Senha para login"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="role">Função</Label>
+                <select
+                  id="role"
+                  value={formData.role}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      role: e.target.value as "admin" | "user",
+                    })
+                  }
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm"
+                >
+                  <option value="user">Usuário</option>
+                  <option value="admin">Administrador</option>
+                </select>
               </div>
               <div className="flex justify-end space-x-2 pt-2">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => setIsAddDialogOpen(false)}
                 >
                   Cancelar
@@ -201,6 +244,7 @@ const MinisterList = () => {
                   <tr className="border-b text-left">
                     <th className="px-4 py-2 font-medium">Nome</th>
                     <th className="px-4 py-2 font-medium">Telefone</th>
+                    <th className="px-4 py-2 font-medium">Tipo</th>
                     <th className="px-4 py-2 font-medium">Ações</th>
                   </tr>
                 </thead>
@@ -217,6 +261,12 @@ const MinisterList = () => {
                         <div className="flex items-center">
                           <Phone className="mr-2 h-4 w-4 text-muted-foreground" />
                           {minister.phone}
+                        </div>
+                      </td>
+                      <td className="px-4 py-2">
+                        <div className="flex items-center">
+                          <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
+                          {minister.role === 'admin' ? 'Admin' : 'Usuário'}
                         </div>
                       </td>
                       <td className="px-4 py-2">
@@ -265,7 +315,9 @@ const MinisterList = () => {
               <Input
                 id="edit-name"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 placeholder="Nome do ministro"
               />
             </div>
@@ -274,7 +326,9 @@ const MinisterList = () => {
               <Input
                 id="edit-phone"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
                 placeholder="Telefone para contato"
               />
             </div>
@@ -283,29 +337,45 @@ const MinisterList = () => {
               <Input
                 id="edit-username"
                 value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, username: e.target.value })
+                }
                 placeholder="Nome de usuário para login"
               />
             </div>
             <div className="space-y-2">
-              <Label>Imagem de Perfil</Label>
-              <div className="flex items-center space-x-4">
-                <Avatar className="w-16 h-16">
-                  <AvatarImage src={formData.profileImage} alt="Imagem de perfil" />
-                  <AvatarFallback>{formData.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <Input
-                  type="text"
-                  value={formData.profileImage}
-                  onChange={(e) => setFormData({ ...formData, profileImage: e.target.value })}
-                  placeholder="URL da imagem de perfil"
-                />
-              </div>
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                placeholder="Senha para login"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-role">Função</Label>
+              <select
+                id="edit-role"
+                value={formData.role}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    role: e.target.value as "admin" | "user",
+                  })
+                }
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm"
+              >
+                <option value="minister">Ministro</option>
+                <option value="admin">Administrador</option>
+              </select>
             </div>
             <div className="flex justify-end space-x-2 pt-2">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setIsEditDialogOpen(false)}
               >
                 Cancelar

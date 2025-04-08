@@ -5,7 +5,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { Users, UserCheck, UserX, PlusCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { patientService } from "@/services/mockData";
+import { patientService } from "@/services/patientService";
 
 const Index = () => {
   const { data: patients, isLoading: isLoadingPatients } = useQuery({

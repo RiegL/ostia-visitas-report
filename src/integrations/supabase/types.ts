@@ -53,9 +53,9 @@ export type Database = {
       }
       patients: {
         Row: {
-          address: string | null
           created_at: string | null
           district: string | null
+          address: string | null
           id: string
           name: string
           phones: string[] | null
@@ -63,9 +63,9 @@ export type Database = {
           update_at: string | null
         }
         Insert: {
-          address?: string | null
           created_at?: string | null
           district?: string | null
+          address: string | null
           id?: string
           name: string
           phones?: string[] | null
@@ -73,9 +73,9 @@ export type Database = {
           update_at?: string | null
         }
         Update: {
-          address?: string | null
           created_at?: string | null
           district?: string | null
+          address: string | null
           id?: string
           name?: string
           phones?: string[] | null
