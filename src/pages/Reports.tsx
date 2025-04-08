@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { patientService } from "@/services/mockData";
+import { patientService } from "@/services/patientService";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";

@@ -1,19 +1,33 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { Minister, AuthContext as AuthContextType } from "@/types";
+import { Minister } from "@/types";
 import { ministerService } from "@/services/ministerService";
 import { toast } from "sonner";
+
+
+export type AuthContextType = {
+  minister: Minister | null;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => void;
+  hasPermission: (permission: string) => boolean;
+};
 
 const AuthContext = createContext<AuthContextType>({
   minister: null,
   isAuthenticated: false,
+  isAdmin: false, 
   login: async () => false,
   logout: () => {},
+  hasPermission: () => false,
 });
+
+
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [minister, setMinister] = useState<Minister | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Verificar se há um ministro salvo no localStorage
@@ -23,6 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const parsedMinister = JSON.parse(savedMinister);
         setMinister(parsedMinister);
         setIsAuthenticated(true);
+        setIsAdmin(parsedMinister.role === 'admin');
       } catch (error) {
         console.error("Erro ao recuperar dados do ministro:", error);
         localStorage.removeItem("minister");
@@ -37,6 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (authenticatedMinister) {
         setMinister(authenticatedMinister);
         setIsAuthenticated(true);
+        setIsAdmin(authenticatedMinister.role === 'admin');
         localStorage.setItem("minister", JSON.stringify(authenticatedMinister));
         toast.success(`Bem-vindo, ${authenticatedMinister.name}!`);
         return true;
@@ -54,12 +70,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setMinister(null);
     setIsAuthenticated(false);
+    setIsAdmin(false);
     localStorage.removeItem("minister");
     toast.info("Você saiu do sistema.");
   };
 
+
+  
+  // Função para verificar se o usuário tem uma determinada permissão
+  const hasPermission = (permission: string) => {
+    if (!minister) return false;
+    
+    switch (permission) {
+      case 'manage_ministers':
+        return minister.role === 'admin';
+      default:
+        return false;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ minister, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ 
+      minister, 
+      isAuthenticated, 
+      isAdmin, 
+      login, 
+      logout, 
+      hasPermission 
+    }}>
       {children}
     </AuthContext.Provider>
   );
