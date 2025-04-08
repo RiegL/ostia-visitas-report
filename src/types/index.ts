@@ -28,6 +28,24 @@ export interface Minister {
   profileImage?: string;
 }
 
+export interface PatientInput {
+  name: string;
+  address: string;
+  district: string;
+  phones: string[];
+  status?: PatientStatus;
+  observations?: string;
+}
+
+export interface PatientUpdate {
+  name?: string;
+  address?: string;
+  district?: string;
+  phones?: string[];
+  status?: PatientStatus;
+  observations?: string;
+}
+
 export interface AuthContext {
   minister: Minister | null;
   isAuthenticated: boolean;
