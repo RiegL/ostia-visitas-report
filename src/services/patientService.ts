@@ -1,16 +1,16 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { Patient, PatientStatus } from "@/types";
-import { v4 as uuidv4 } from "uuid";
+import { Minister } from "@/types";
 
-type PatientInput = Omit<Patient, "id" | "createdAt" | "updatedAt">;
-type PatientUpdate = Partial<Omit<Patient, "id" | "createdAt" | "updatedAt">>;
-
-export const patientService = {
-  getAll: async (): Promise<Patient[]> => {
-    const { data, error } = await supabase.from("patients").select("*");
-
+export const ministerService = {
+  // Buscar todos os ministros
+  getAll: async (): Promise<Minister[]> => {
+    const { data, error } = await supabase
+      .from('minister')
+      .select('*');
+    
     if (error) {
-      console.error("Erro ao buscar pacientes:", error);
+      console.error('Erro ao buscar ministros:', error);
       throw error;
     }
 
@@ -30,22 +30,28 @@ export const patientService = {
       observations: patient.observations || "",
     }));
   },
-
-  getById: async (id: string): Promise<Patient | null> => {
+  
+  // Autenticar um ministro
+  authenticate: async (username: string, password: string): Promise<Minister | null> => {
+    // Buscar ministro pelo nome de usuário
+    console.log("Tentando logar com:", { username, password });
     const { data, error } = await supabase
-      .from("patients")
-      .select("*")
-      .eq("id", id)
+      .from('minister')
+      .select('*')
+      .eq('username', username)
+      .eq('password', password) // Nota: Em produção, use hash de senha!
       .single();
-
-    if (error) {
-      if (error.code === "PGRST116") return null;
-      console.error("Erro ao buscar paciente:", error);
-      throw error;
+    
+    if (error || !data) {
+      console.error('Erro de autenticação:', error);
+      return null;
     }
-
-    if (!data) return null;
-
+    
+    // Atualizar último login
+    await supabase
+      .from('minister')
+      .update({ lastLogin: new Date().toISOString() })
+      .eq('id', data.id);
     return {
       id: data.id,
       name: data.name,
@@ -124,8 +130,8 @@ export const patientService = {
       .select()
       .single();
 
-    if (error) {
-      console.error("Erro ao atualizar paciente:", error);
+    if (error || !updated) {
+      console.error("Erro ao atualizar ministro:", error);
       throw error;
     }
 
@@ -146,12 +152,18 @@ export const patientService = {
     };
   },
 
-  delete: async (id: string): Promise<void> => {
-    const { error } = await supabase.from("patients").delete().eq("id", id);
-
+  // Deletar ministro por ID
+  delete: async (id: number): Promise<void> => {
+    const { error } = await supabase
+      .from('minister')
+      .delete()
+      .eq('id', id);
+  
     if (error) {
-      console.error("Erro ao excluir paciente:", error);
+      console.error("Erro ao deletar ministro:", error);
       throw error;
     }
   },
+  
+
 };
