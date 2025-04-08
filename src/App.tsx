@@ -15,7 +15,6 @@ import NotFound from "./pages/NotFound";
 import { Toaster } from "./components/ui/toaster";
 import PermissionRoute from "./components/PermissonRoute";
 import { useEffect } from "react";
-import { App as CapApp } from "@capacitor/core";
 
 const queryClient = new QueryClient({
   defaultOptions: {
