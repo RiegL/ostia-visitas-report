@@ -262,6 +262,7 @@ const MinisterList = () => {
                   <tr className="border-b text-left">
                     <th className="px-4 py-2 font-medium">Nome</th>
                     <th className="px-4 py-2 font-medium">Telefone</th>
+                    <th className="px-4 py-2 font-medium">Usuário</th>
                     <th className="px-4 py-2 font-medium">Tipo</th>
                     <th className="px-4 py-2 font-medium">Ações</th>
                   </tr>
@@ -279,6 +280,12 @@ const MinisterList = () => {
                         <div className="flex items-center">
                           <Phone className="mr-2 h-4 w-4 text-muted-foreground" />
                           {minister.phone}
+                        </div>
+                      </td>
+                      <td className="px-4 py-2">
+                        <div className="flex items-center">
+                          <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                          {minister.username}
                         </div>
                       </td>
                       <td className="px-4 py-2">
