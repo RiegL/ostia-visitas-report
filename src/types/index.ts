@@ -30,6 +30,8 @@ export interface Minister {
 export interface AuthContext {
   minister: Minister | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
+  hasPermission: (permission: string) => boolean;
 }
