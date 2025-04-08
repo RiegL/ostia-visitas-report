@@ -15,7 +15,6 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Redirecionar se já estiver autenticado
   if (isAuthenticated) {
     navigate("/");
     return null;
@@ -34,6 +33,9 @@ const Login = () => {
       const success = await login(username, password);
       if (success) {
         navigate("/");
+      } else {
+        setUsername("");
+        setPassword("");
       }
     } finally {
       setIsLoading(false);

@@ -27,6 +27,7 @@ export const patientService = {
       status: (patient.status as PatientStatus) || "active",
       createdAt: patient.created_at || new Date().toISOString(),
       updatedAt: patient.update_at || new Date().toISOString(),
+      observations: patient.observations || "",
     }));
   },
 
@@ -58,6 +59,7 @@ export const patientService = {
       status: (data.status as PatientStatus) || "active",
       createdAt: data.created_at || new Date().toISOString(),
       updatedAt: data.update_at || new Date().toISOString(),
+      observations: data.observations || "",
     };
   },
 
@@ -72,11 +74,12 @@ export const patientService = {
       status: patientData.status || "active",
       created_at: now,
       update_at: now,
+      observations: patientData.observations || "",
     };
   
     const { data, error } = await supabase
       .from("patients")
-      .insert([newPatient]) // ⚠️ importante usar array aqui
+      .insert([newPatient]) 
       .select()
       .single();
   
@@ -98,6 +101,7 @@ export const patientService = {
       status: (data.status as PatientStatus) || "active",
       createdAt: data.created_at,
       updatedAt: data.update_at,
+      observations: data.observations || "",
     };
   },
   
@@ -110,6 +114,7 @@ export const patientService = {
       ...(patientData.phones && { phones: patientData.phones }),
       ...(patientData.status && { status: patientData.status }),
       update_at: new Date().toISOString(),
+      ...(patientData.observations && { observations: patientData.observations }),
     };
 
     const { data, error } = await supabase
@@ -137,6 +142,7 @@ export const patientService = {
       status: (data.status as PatientStatus) || "active",
       createdAt: data.created_at,
       updatedAt: data.update_at,
+      observations: data.observations || "",
     };
   },
 

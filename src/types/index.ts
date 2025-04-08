@@ -10,6 +10,7 @@ export interface Patient {
   status: PatientStatus;
   createdAt: string;
   updatedAt: string;
+  observations?: string;
 }
 
 export interface Minister {

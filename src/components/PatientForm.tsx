@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Patient, PatientStatus } from "@/types";
@@ -23,11 +22,13 @@ const PatientForm: React.FC<PatientFormProps> = ({
 }) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [name, setName] = useState(initialData.name || "");
   const [address, setAddress] = useState(initialData.address || "");
   const [district, setDistrict] = useState(initialData.district || "");
-  const [phones, setPhones] = useState<string[]>(initialData.phones || ["", "", ""]);
+  const [phones, setPhones] = useState<string[]>(
+    initialData.phones || ["", "", ""]
+  );
   const [status, setStatus] = useState<PatientStatus>(
     initialData.status || "active"
   );
@@ -40,19 +41,19 @@ const PatientForm: React.FC<PatientFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setIsSubmitting(true);
-      
+
       // Filter out empty phone numbers
-      const filteredPhones = phones.filter(phone => phone.trim() !== "");
-      
+      const filteredPhones = phones.filter((phone) => phone.trim() !== "");
+
       if (filteredPhones.length === 0) {
         toast.error("Adicione pelo menos um telefone para contato");
         setIsSubmitting(false);
         return;
       }
-      
+
       if (isEditing && initialData.id) {
         // Update existing patient
         await patientService.update(initialData.id, {
@@ -62,7 +63,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
           phones: filteredPhones,
           status,
         });
-        
+
         toast.success("Paciente atualizado com sucesso");
       } else {
         // Create new patient
@@ -73,10 +74,10 @@ const PatientForm: React.FC<PatientFormProps> = ({
           phones: filteredPhones,
           status,
         });
-        
+
         toast.success("Paciente cadastrado com sucesso");
       }
-      
+
       // Navigate back to patients list
       navigate("/patients");
     } catch (error) {
@@ -138,22 +139,6 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     placeholder={`Telefone ${index + 1}`}
                     className="mt-1"
                   />
-                  {index < 2 && phone === "" && phones[index + 1] === "" && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 flex-shrink-0"
-                      onClick={() => {
-                        const newPhones = [...phones];
-                        newPhones.splice(index, 1);
-                        newPhones.push("");
-                        setPhones(newPhones);
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
                 </div>
               ))}
             </div>
@@ -199,7 +184,11 @@ const PatientForm: React.FC<PatientFormProps> = ({
               Cancelar
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Salvando..." : isEditing ? "Atualizar" : "Cadastrar"}
+              {isSubmitting
+                ? "Salvando..."
+                : isEditing
+                ? "Atualizar"
+                : "Cadastrar"}
             </Button>
           </div>
         </form>

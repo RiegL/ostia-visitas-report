@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Users, PlusCircle, FileText, Menu, X, LogOut } from "lucide-react";
@@ -16,16 +15,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { minister, logout } = useAuth();
+  const { minister, logout, hasPermission } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  const navItems = [
-    { icon: Home, label: "Início", path: "/" },
-    { icon: Users, label: "Pacientes", path: "/patients" },
-    { icon: PlusCircle, label: "Novo Paciente", path: "/patients/new" },
-    { icon: FileText, label: "Relatórios", path: "/reports" },
-    { icon: Users, label: "Ministros", path: "/ministers" },
-  ];
+  const getNavItems = () => {
+    const items = [
+      { icon: Home, label: "Início", path: "/" },
+      { icon: Users, label: "Pacientes", path: "/patients" },
+      { icon: PlusCircle, label: "Novo Paciente", path: "/patients/new" },
+      { icon: FileText, label: "Relatórios", path: "/reports" },
+    ];
+    
+    // Adicionar o item de Ministros apenas se o usuário tiver permissão
+    if (hasPermission('manage_ministers')) {
+      items.push({ icon: Users, label: "Ministros", path: "/ministers" });
+    }
+    
+    return items;
+  };
+
+  const navItems = getNavItems();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -40,19 +49,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="flex min-h-screen bg-background">
       {/* Mobile menu button */}
       {isMobile && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed top-4 left-4 z-50"
-          onClick={toggleSidebar}
-        >
-          {isSidebarOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </Button>
-      )}
+  <Button
+    variant="ghost"
+    size="icon"
+    className="fixed top-1 right-1 z-50"
+    onClick={toggleSidebar}
+  >
+    {isSidebarOpen ? (
+      <X className="h-6 w-6" />
+    ) : (
+      <Menu className="h-6 w-6" />
+    )}
+  </Button>
+)}
 
       {/* Sidebar */}
       <div
@@ -65,7 +74,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <h1 className="text-2xl font-bold">Visitas Pastorais</h1>
             <p className="text-sm opacity-80">Sistema de relatórios</p>
             {minister && (
-              <p className="mt-2 text-sm font-medium">Olá, {minister.name}</p>
+              <p className="mt-2 text-sm font-medium">
+                Olá, {minister.name}
+                {minister.role === 'admin' && <span className="ml-1 text-xs">(Admin)</span>}
+              </p>
             )}
           </div>
 
@@ -105,7 +117,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               Sair
             </Button>
             <p className="mt-3 text-center text-xs text-white/60">
-              &copy; {new Date().getFullYear()} Ministério Pastoral
+              &copy; {new Date().getFullYear()} CodeL
             </p>
           </div>
         </div>
