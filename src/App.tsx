@@ -14,7 +14,6 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { Toaster } from "./components/ui/toaster";
 import PermissionRoute from "./components/PermissonRoute";
-import { useEffect } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,24 +62,6 @@ const AppRoutes = () => {
 };
 
 const App = () => {
-  // Manipulador para eventos de back (voltar) no Android
-  useEffect(() => {
-    const handleAndroidBackButton = () => {
-      if (window.location.pathname === "/login") {
-        // Se estiver na tela de login, confirmar saída do app
-        if (window.confirm("Deseja sair do aplicativo?")) {
-          CapApp.exitApp();
-        }
-      }
-      // Outros caminhos usam o comportamento padrão de navegação
-    };
-
-    document.addEventListener('ionBackButton', handleAndroidBackButton);
-    
-    return () => {
-      document.removeEventListener('ionBackButton', handleAndroidBackButton);
-    };
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
