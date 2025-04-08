@@ -10,6 +10,7 @@ export interface Patient {
   status: PatientStatus;
   createdAt: string;
   updatedAt: string;
+  observations?: string;
 }
 
 export interface Minister {
@@ -25,6 +26,24 @@ export interface Minister {
   updatedAt?: string;
   lastLogin?: string;
   profileImage?: string;
+}
+
+export interface PatientInput {
+  name: string;
+  address: string;
+  district: string;
+  phones: string[];
+  status?: PatientStatus;
+  observations?: string;
+}
+
+export interface PatientUpdate {
+  name?: string;
+  address?: string;
+  district?: string;
+  phones?: string[];
+  status?: PatientStatus;
+  observations?: string;
 }
 
 export interface AuthContext {

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ministerService } from "@/services/ministerService";
 import { Minister } from "@/types";
-import { Pencil, Trash2, User, UserPlus, Phone, Shield} from "lucide-react";
+import { Pencil, Trash2, User, UserPlus, Phone, Shield } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +29,10 @@ type MinisterFormData = {
 const MinisterList = () => {
   const queryClient = useQueryClient();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [ministerIdToDelete, setMinisterIdToDelete] = useState<number | null>(
+    null
+  );
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedMinister, setSelectedMinister] = useState<Minister | null>(
     null
@@ -52,7 +56,13 @@ const MinisterList = () => {
       queryClient.invalidateQueries({ queryKey: ["ministers"] });
       toast.success("Ministro cadastrado com sucesso");
       setIsAddDialogOpen(false);
-      setFormData({ name: "", phone: "", username: "", role: "user" });
+      setFormData({
+        name: "",
+        phone: "",
+        username: "",
+        role: "user",
+        password: "",
+      });
     },
     onError: () => {
       toast.error("Erro ao cadastrar ministro");
@@ -119,8 +129,15 @@ const MinisterList = () => {
   };
 
   const handleDelete = (id: number) => {
-    if (window.confirm("Tem certeza que deseja remover este ministro?")) {
-      deleteMutation.mutate(id);
+    setMinisterIdToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (ministerIdToDelete !== null) {
+      deleteMutation.mutate(ministerIdToDelete);
+      setDeleteDialogOpen(false);
+      setMinisterIdToDelete(null);
     }
   };
 
@@ -131,6 +148,7 @@ const MinisterList = () => {
       phone: minister.phone,
       username: minister.username,
       role: minister.role,
+      password: minister.password,
     });
     setIsEditDialogOpen(true);
   };
@@ -266,7 +284,7 @@ const MinisterList = () => {
                       <td className="px-4 py-2">
                         <div className="flex items-center">
                           <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
-                          {minister.role === 'admin' ? 'Admin' : 'Usuário'}
+                          {minister.role === "admin" ? "Admin" : "Usuário"}
                         </div>
                       </td>
                       <td className="px-4 py-2">
@@ -383,6 +401,28 @@ const MinisterList = () => {
               <Button type="submit">Atualizar</Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Tem certeza?</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-muted-foreground">
+            Essa ação não pode ser desfeita. Deseja realmente remover este
+            ministro?
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Remover
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </Layout>

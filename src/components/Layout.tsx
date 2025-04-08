@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Users, PlusCircle, FileText, Menu, X, LogOut } from "lucide-react";
@@ -50,19 +49,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="flex min-h-screen bg-background">
       {/* Mobile menu button */}
       {isMobile && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed top-4 left-4 z-50"
-          onClick={toggleSidebar}
-        >
-          {isSidebarOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </Button>
-      )}
+  <Button
+    variant="ghost"
+    size="icon"
+    className="fixed top-1 right-1 z-50"
+    onClick={toggleSidebar}
+  >
+    {isSidebarOpen ? (
+      <X className="h-6 w-6" />
+    ) : (
+      <Menu className="h-6 w-6" />
+    )}
+  </Button>
+)}
 
       {/* Sidebar */}
       <div
@@ -118,7 +117,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               Sair
             </Button>
             <p className="mt-3 text-center text-xs text-white/60">
-              &copy; {new Date().getFullYear()} Ministério Pastoral
+              &copy; {new Date().getFullYear()} CodeL
             </p>
           </div>
         </div>

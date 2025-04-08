@@ -61,6 +61,7 @@ export type Database = {
           phones: string[] | null
           status: string | null
           update_at: string | null
+          observations: string | null
         }
         Insert: {
           address?: string | null
@@ -71,6 +72,7 @@ export type Database = {
           phones?: string[] | null
           status?: string | null
           update_at?: string | null
+          observations?: string | null
         }
         Update: {
           address?: string | null
@@ -81,6 +83,7 @@ export type Database = {
           phones?: string[] | null
           status?: string | null
           update_at?: string | null
+          observations?: string | null
         }
         Relationships: []
       }
@@ -210,3 +213,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
