@@ -14,6 +14,7 @@ import {
     description?: string;
     onClose: () => void;
     onConfirm: () => void;
+    colorConfirmar?: "inherit" | "primary" | "secondary" | "success" | "error" | "info" | "warning";
   }
   
   export const ConfirmDialog = ({
@@ -22,6 +23,7 @@ import {
     description = "Tem certeza que deseja continuar?",
     onClose,
     onConfirm,
+    colorConfirmar
   }: ConfirmDialogProps) => {
     return (
       <Dialog open={open} onClose={onClose}>
@@ -31,7 +33,7 @@ import {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancelar</Button>
-          <Button onClick={onConfirm} variant="contained" color="error">
+          <Button onClick={onConfirm} variant="contained" color={colorConfirmar}>
             Confirmar
           </Button>
         </DialogActions>

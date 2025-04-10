@@ -87,6 +87,35 @@ export type Database = {
         }
         Relationships: []
       }
+      appointments: {
+        Row: {
+          id: number;
+          patient_id: string;
+          minister_id: number;
+          minister_name: string;
+          date: string;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          patient_id: string;
+          minister_id: number;
+          minister_name: string;
+          date: string;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          patient_id?: string;
+          minister_id?: number;
+          minister_name?: string;
+          date?: string;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      }
+    
     }
     Views: {
       [_ in never]: never
