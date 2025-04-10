@@ -13,8 +13,8 @@ const NewPatient = () => {
   return (
     <Layout>
       <PageHeader 
-        title="Cadastrar Novo Paciente" 
-        subtitle="Preencha os dados do paciente para cadastro"
+        title="Cadastrar Novo Doente" 
+        subtitle="Preencha os dados do doente para cadastro"
       >
         <Button variant="outline" onClick={() => navigate("/patients")}>
           <ArrowLeft className="mr-2 h-4 w-4" />

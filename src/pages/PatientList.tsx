@@ -45,13 +45,13 @@ const PatientList = () => {
   return (
     <Layout>
       <PageHeader 
-        title="Pacientes" 
-        subtitle="Gerencie a lista de pacientes para visitas"
+        title="Doentes" 
+        subtitle="Gerencie a lista de doentes para visitas"
       >
         <Button asChild className="bg-pastoral-400 hover:bg-pastoral-500">
           <Link to="/patients/new">
             <PlusCircle className="mr-2 h-4 w-4" />
-            Novo Paciente
+            Novo doente
           </Link>
         </Button>
       </PageHeader>
@@ -77,18 +77,17 @@ const PatientList = () => {
             <SelectItem value="all">Todos os status</SelectItem>
             <SelectItem value="active">Ativos</SelectItem>
             <SelectItem value="recovered">Recuperados</SelectItem>
-            <SelectItem value="deceased">Falecidos</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {isLoading ? (
-        <div className="text-center">Carregando pacientes...</div>
+        <div className="text-center">Carregando doentes...</div>
       ) : filteredPatients.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-10">
             <User className="mb-2 h-10 w-10 text-muted-foreground" />
-            <h3 className="text-lg font-medium">Nenhum paciente encontrado</h3>
+            <h3 className="text-lg font-medium">Nenhum doente encontrado</h3>
             <p className="text-sm text-muted-foreground">
               {searchQuery || statusFilter !== "all"
                 ? "Tente ajustar os filtros de busca"
@@ -102,7 +101,7 @@ const PatientList = () => {
               >
                 <Link to="/patients/new">
                   <PlusCircle className="mr-2 h-4 w-4" />
-                  Adicionar Paciente
+                  Adicionar Doente
                 </Link>
               </Button>
             )}
@@ -134,7 +133,7 @@ const PatientCard = ({ patient }: { patient: Patient }) => {
                 <StatusBadge status={patient.status} />
               </div>
               <p className="mt-1 text-sm text-muted-foreground">{patient.address}</p>
-              <p className="text-sm text-muted-foreground">Bairro: {patient.district}</p>
+              <p className="text-sm text-muted-foreground">Setor: {patient.district}</p>
             </div>
             <div className="mt-2 sm:mt-0 sm:text-right">
               <div className="flex items-center gap-1 text-sm">

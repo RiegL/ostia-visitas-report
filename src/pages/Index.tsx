@@ -24,23 +24,23 @@ const Index = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-pastoral-400">Bem-vindo ao Sistema de Visitas</h1>
-            <p className="text-muted-foreground">Gerencie os pacientes e relatórios de visitas</p>
+            <p className="text-muted-foreground">Gerencie os doentes e relatórios de visitas</p>
           </div>
           <div className="mt-4 md:mt-0">
             <Button asChild className="bg-pastoral-400 hover:bg-pastoral-500">
               <Link to="/patients/new">
                 <PlusCircle className="mr-2 h-4 w-4" />
-                Novo Paciente
+               Novo Doente
               </Link>
             </Button>
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total de Pacientes
+                Total de Doentes
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -56,7 +56,7 @@ const Index = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Pacientes Ativos
+                Doentes Ativos
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -85,21 +85,6 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Falecidos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold text-gray-600">
-                  {isLoadingPatients ? "..." : deceasedCount}
-                </div>
-                <UserX className="h-6 w-6 text-gray-600" />
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -114,13 +99,13 @@ const Index = () => {
               <Button variant="outline" className="h-20" asChild>
                 <Link to="/patients" className="flex flex-col items-center justify-center">
                   <Users className="mb-2 h-6 w-6" />
-                  <span>Lista de Pacientes</span>
+                  <span>Lista de Doentes</span>
                 </Link>
               </Button>
               <Button variant="outline" className="h-20" asChild>
                 <Link to="/patients/new" className="flex flex-col items-center justify-center">
                   <PlusCircle className="mb-2 h-6 w-6" />
-                  <span>Novo Paciente</span>
+                  <span>Novo Doente</span>
                 </Link>
               </Button>
               <Button variant="outline" className="h-20" asChild>
@@ -147,15 +132,14 @@ const Index = () => {
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none">
               <p>
-                Este sistema foi desenvolvido para auxiliar o gerenciamento de visitas pastorais aos doentes.
+                Este sistema foi desenvolvido para auxiliar o gerenciamento de visitas aos doentes.
               </p>
               <p>
-                Você pode cadastrar pacientes, atualizar o status deles quando se recuperarem ou
-                falecerem, e manter um registro organizado das visitas realizadas.
+                Você pode cadastrar doentes, atualizar o status deles e manter um registro organizado das visitas realizadas.
               </p>
               <p>
-                Para começar, adicione um novo paciente clicando no botão "Novo Paciente"
-                ou acesse a lista completa em "Pacientes".
+                Para começar, adicione um novo doente clicando no botão "Novo Doente"
+                ou acesse a lista completa em "Doentes".
               </p>
             </CardContent>
           </Card>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Users, PlusCircle, FileText, Menu, X, LogOut } from "lucide-react";
+import { Home, Users, PlusCircle, FileText, Menu, X, LogOut,Calendar  } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,8 +21,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const getNavItems = () => {
     const items = [
       { icon: Home, label: "Início", path: "/" },
-      { icon: Users, label: "Pacientes", path: "/patients" },
-      { icon: PlusCircle, label: "Novo Paciente", path: "/patients/new" },
+      { icon: Users, label: "Doentes", path: "/patients" },
+      { icon: Calendar, label: "Agendamentos", path: "/appointment" },
+      { icon: PlusCircle, label: "Novo Doente", path: "/patients/new" },
       { icon: FileText, label: "Relatórios", path: "/reports" },
     ];
     
@@ -71,8 +72,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       >
         <div className="flex h-full flex-col">
           <div className="px-4 py-6">
-            <h1 className="text-2xl font-bold">Visitas Pastorais</h1>
-            <p className="text-sm opacity-80">Sistema de relatórios</p>
+            <h1 className="text-2xl font-bold">Ministros da Eucaristia</h1>
+            <p className="text-sm opacity-80">Capela São Pedro</p>
             {minister && (
               <p className="mt-2 text-sm font-medium">
                 Olá, {minister.name}

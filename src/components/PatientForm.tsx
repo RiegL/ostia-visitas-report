@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Patient, PatientStatus } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { patientService } from "@/services/patientService";
 import { X, Plus } from "lucide-react";
+import InputMask from "react-input-mask";
 
 interface PatientFormProps {
   initialData?: Partial<Patient>;
@@ -17,7 +18,7 @@ interface PatientFormProps {
 }
 
 const PatientForm: React.FC<PatientFormProps> = ({
-  initialData = {},
+  initialData = {} as Partial<Patient>,
   isEditing = false,
 }) => {
   const navigate = useNavigate();
@@ -118,13 +119,13 @@ const PatientForm: React.FC<PatientFormProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="district">Bairro</Label>
+              <Label htmlFor="district">Setor</Label>
               <Input
                 id="district"
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
                 required
-                placeholder="Bairro"
+                placeholder="Setor"
                 className="mt-1"
               />
             </div>
@@ -161,12 +162,6 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     <RadioGroupItem value="recovered" id="recovered" />
                     <Label htmlFor="recovered" className="cursor-pointer">
                       Recuperado (não precisa mais de visitas)
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="deceased" id="deceased" />
-                    <Label htmlFor="deceased" className="cursor-pointer">
-                      Falecido
                     </Label>
                   </div>
                 </RadioGroup>

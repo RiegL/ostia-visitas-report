@@ -54,3 +54,19 @@ export interface AuthContext {
   logout: () => void;
   hasPermission: (permission: string) => boolean;
 }
+
+export interface Appointment {
+  id: number;            // Será um bigint auto-incremental no Supabase
+  patientId: string;     // Referência ao paciente (UUID)
+  ministerId: number;    // Referência ao ministro (int8)
+  date: string;          // Data/hora do agendamento (em formato ISO, por exemplo)
+  notes?: string;        // Observações da visita (opcional)
+  createdAt: string;     // Data de criação
+}
+
+export interface AppointmentInput {
+  patientId: string;
+  ministerId: number;
+  date: string;
+  notes?: string;
+}

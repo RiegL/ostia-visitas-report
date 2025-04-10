@@ -42,8 +42,6 @@ const Reports = () => {
         return patients.filter((p) => p.status === "active");
       case "recovered":
         return patients.filter((p) => p.status === "recovered");
-      case "deceased":
-        return patients.filter((p) => p.status === "deceased");
       case "byDistrict":
         return [...patients].sort((a, b) =>
           a.district.localeCompare(b.district)
@@ -62,10 +60,8 @@ const Reports = () => {
         return "Pessoas Ativas";
       case "recovered":
         return "Pessoas Recuperadas";
-      case "deceased":
-        return "Pessoas Falecidas";
       case "byDistrict":
-        return "Pessoas por Bairro";
+        return "Pessoas por Setor";
       case "all":
       default:
         return "Todas as Pessoas";
@@ -113,8 +109,7 @@ const Reports = () => {
             <SelectContent>
               <SelectItem value="active">Pessoas Ativas</SelectItem>
               <SelectItem value="recovered">Pessoas Recuperadas</SelectItem>
-              <SelectItem value="deceased">Pessoas Falecidas</SelectItem>
-              <SelectItem value="byDistrict">Pessoas por Bairro</SelectItem>
+              <SelectItem value="byDistrict">Pessoas por Setor</SelectItem>
               <SelectItem value="all">Todas as Pessoas</SelectItem>
             </SelectContent>
           </Select>
@@ -157,7 +152,7 @@ const Reports = () => {
                           className="border rounded-md p-4 bg-white shadow-sm"
                         >
                           <p className="font-semibold">{patient.name}</p>
-                          <p><strong>Bairro:</strong> {patient.district}</p>
+                          <p><strong>Setor:</strong> {patient.district}</p>
                           <p><strong>Endereço:</strong> {patient.address}</p>
                           <p><strong>Telefone:</strong> {patient.phones[0]}</p>
                           <p>
@@ -200,7 +195,7 @@ const Reports = () => {
                     <thead>
                       <tr className="border-b text-left">
                         <th className="px-4 py-2 font-medium">Nome</th>
-                        <th className="px-4 py-2 font-medium">Bairro</th>
+                        <th className="px-4 py-2 font-medium">Setor</th>
                         <th className="px-4 py-2 font-medium">Endereço</th>
                         <th className="px-4 py-2 font-medium">Telefone</th>
                         <th className="px-4 py-2 font-medium">Observações</th>
@@ -292,7 +287,7 @@ const renderPatientsByDistrict = (
   return Object.entries(patientsByDistrict).flatMap(([district, group], i) => [
     <tr key={`d-${i}`} className="bg-muted/50">
       <td colSpan={6} className="px-4 py-2 font-medium">
-        Bairro: {district} ({group.length} pessoa(s))
+        Setor: {district} ({group.length} pessoa(s))
       </td>
     </tr>,
     ...group.map((p) => (
@@ -345,7 +340,7 @@ const renderCardsByDistrict = (
       key={`district-${i}`}
       className="text-sm font-medium text-muted-foreground"
     >
-      Bairro: {district} ({group.length} pessoa(s))
+      Setor: {district} ({group.length} pessoa(s))
     </div>,
     ...group.map((p) => (
       <div key={p.id} className="border rounded-md p-4 bg-white shadow-sm">

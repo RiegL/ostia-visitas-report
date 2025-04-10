@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { Toaster } from "./components/ui/toaster";
 import PermissionRoute from "./components/PermissonRoute";
+import Appointment from "./pages/Appointment";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +46,7 @@ const AppRoutes = () => {
       
       <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
       <Route path="/patients" element={<ProtectedRoute><PatientList /></ProtectedRoute>} />
+      <Route path="/appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
       <Route path="/patients/new" element={<ProtectedRoute><NewPatient /></ProtectedRoute>} />
       <Route path="/patients/:id" element={<ProtectedRoute><PatientDetails /></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />

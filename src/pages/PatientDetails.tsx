@@ -59,22 +59,22 @@ const PatientDetails = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patient", id] });
       queryClient.invalidateQueries({ queryKey: ["patients"] });
-      toast.success("Status do paciente atualizado com sucesso");
+      toast.success("Status do doente atualizado com sucesso");
       setIsStatusDialogOpen(false);
     },
     onError: () => {
-      toast.error("Erro ao atualizar status do paciente");
+      toast.error("Erro ao atualizar status do doente");
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: () => patientService.delete(id!),
     onSuccess: () => {
-      toast.success("Paciente removido com sucesso");
+      toast.success("Doente removido com sucesso");
       navigate("/patients");
     },
     onError: () => {
-      toast.error("Erro ao remover paciente");
+      toast.error("Erro ao remover doente");
     },
   });
 
@@ -85,7 +85,7 @@ const PatientDetails = () => {
   const handleDeletePatient = () => {
     if (
       window.confirm(
-        "Tem certeza que deseja remover este paciente? Esta ação não pode ser desfeita."
+        "Tem certeza que deseja remover este doente? Esta ação não pode ser desfeita."
       )
     ) {
       deleteMutation.mutate();
@@ -111,7 +111,7 @@ const PatientDetails = () => {
     return (
       <Layout>
         <div className="flex h-[50vh] items-center justify-center">
-          <p>Carregando informações do paciente...</p>
+          <p>Carregando informações do doente...</p>
         </div>
       </Layout>
     );
@@ -121,7 +121,7 @@ const PatientDetails = () => {
     return (
       <Layout>
         <div className="flex h-[50vh] flex-col items-center justify-center">
-          <p className="mb-4 text-lg">Paciente não encontrado</p>
+          <p className="mb-4 text-lg">Doente não encontrado</p>
           <Button variant="outline" onClick={() => navigate("/patients")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar para a lista
@@ -140,7 +140,7 @@ const PatientDetails = () => {
 
   return (
     <Layout>
-      <PageHeader title="Detalhes do Paciente">
+      <PageHeader title="Detalhes do Doente">
         <div className="flex space-x-2">
           <Button variant="outline" onClick={() => navigate("/patients")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -155,7 +155,7 @@ const PatientDetails = () => {
             </DialogTrigger>
             <DialogContent className="max-w-[95vw] sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Editar Paciente</DialogTitle>
+                <DialogTitle>Editar Doente</DialogTitle>
               </DialogHeader>
               <PatientForm initialData={patient} isEditing={true} />
             </DialogContent>
@@ -187,7 +187,7 @@ const PatientDetails = () => {
                   Endereço
                 </h3>
                 <p className="mt-1">{patient.address}</p>
-                <p className="text-sm">Bairro: {patient.district}</p>
+                <p className="text-sm">Setor: {patient.district}</p>
               </div>
 
               <Separator />
@@ -245,7 +245,7 @@ const PatientDetails = () => {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Alterar Status do Paciente</DialogTitle>
+                    <DialogTitle>Alterar Status do Doente</DialogTitle>
                   </DialogHeader>
                   <div className="py-4">
                     <RadioGroup
@@ -269,10 +269,6 @@ const PatientDetails = () => {
                         <Label htmlFor="status-recovered">
                           Recuperado (não precisa mais de visitas)
                         </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="deceased" id="status-deceased" />
-                        <Label htmlFor="status-deceased">Falecido</Label>
                       </div>
                     </RadioGroup>
                   </div>
@@ -300,13 +296,13 @@ const PatientDetails = () => {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[600px]">
                   <DialogHeader>
-                    <DialogTitle>Observações do Paciente</DialogTitle>
+                    <DialogTitle>Observações do Doente</DialogTitle>
                   </DialogHeader>
                   <div className="py-4">
                     <Textarea
                       value={observations}
                       onChange={(e) => setObservations(e.target.value)}
-                      placeholder="Anote aqui as observações sobre o paciente..."
+                      placeholder="Anote aqui as observações sobre o doente..."
                       rows={4}
                     />
                   </div>
@@ -328,7 +324,7 @@ const PatientDetails = () => {
                 className="w-full"
                 onClick={handleDeletePatient}
               >
-                Remover Paciente
+                Remover Doente
               </Button>
             </CardContent>
           </Card>

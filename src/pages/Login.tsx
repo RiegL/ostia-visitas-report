@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,10 +15,11 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
   if (isAuthenticated) {
     navigate("/");
-    return null;
   }
+}, [isAuthenticated])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +47,7 @@ const Login = () => {
     <div className="min-h-screen bg-pastoral-gradient flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">Visitas Pastorais</CardTitle>
+          <CardTitle className="text-2xl font-bold">Ministros da Eucaristia</CardTitle>
           <CardDescription>
             Entre com suas credenciais para acessar o sistema
           </CardDescription>
