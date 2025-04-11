@@ -1,24 +1,32 @@
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-
+import { format, parseISO, isBefore } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 
 export function DatePicker({
-  date,
+  value,
   onChange,
 }: {
-  date: Date | undefined;
+  value: string | undefined;
   onChange: (date: Date) => void;
 }) {
-  const handleDateChange = (selectedDate: Date) => {
-    // Aqui, criamos uma nova data com as mesmas informações, mas sem a hora
-    const dateOnly = new Date(selectedDate);
-    dateOnly.setHours(0, 0, 0, 0);  // Definindo hora como 00:00:00 para evitar problemas com fuso horário
+  const selected = value ? parseISO(value) : undefined;
 
-    onChange(dateOnly);  // Passamos a data ajustada sem fuso horário
+  const handleDateChange = (selectedDate: Date | undefined) => {
+    if (!selectedDate) return;
+  
+    // Zera a hora SEM fuso nem conversão
+    selectedDate.setHours(0, 0, 0, 0);
+    onChange(selectedDate);
+  };
+  
+
+  const isPast = (day: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return isBefore(day, today);
   };
 
   return (
@@ -29,14 +37,15 @@ export function DatePicker({
           className="w-[200px] justify-start text-left font-normal"
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "dd/MM/yyyy") : <span>Selecionar data</span>}
+          {selected ? format(selected, "dd/MM/yyyy") : <span>Selecionar data</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
+          selected={selected}
           onSelect={handleDateChange}
+          disabled={isPast}
         />
       </PopoverContent>
     </Popover>

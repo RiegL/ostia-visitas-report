@@ -75,4 +75,20 @@ export const appointmentService = {
       createdAt: a.created_at,
     }));
   },
+  async cancelVisit({ patientId, ministerId }: { patientId: string; ministerId: number }) {
+    // Deleta o agendamento da tabela "appointments" usando os parâmetros
+    const { data, error } = await supabase
+      .from("appointments")
+      .delete()
+      .eq("patient_id", patientId) // Verifica o paciente
+      .eq("minister_id", ministerId); // Verifica o ministro (se necessário)
+
+    if (error) {
+      console.error("Erro ao cancelar visita:", error);
+      throw error;
+    }
+
+    // Se não houver erro, retorna uma mensagem de sucesso ou apenas confirma a exclusão
+    return { success: true, message: "Visita desmarcada com sucesso" };
+  },
 };

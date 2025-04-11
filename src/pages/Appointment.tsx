@@ -12,6 +12,7 @@ import { appointmentService } from "@/services/appointmentService";
 import { AuthContext } from "@/contexts/AuthContext"; // contexto do usuário logado
 import { ConfirmDialog } from "@/components/ConfirmDialog"; // Importe o seu componente ConfirmDialog
 import { DatePicker } from "@/components/ui/DatePicker";
+import { format } from "date-fns";
 
 const Appointment = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,6 +74,31 @@ const Appointment = () => {
     setIsDialogOpen(false); // Fechar o dialog se o usuário cancelar
   };
 
+  const handleCancelAppointment = async (patientId: string) => {
+    if (!selectedPatient) return;
+  
+    try {
+      const result = await appointmentService.cancelVisit({
+        patientId: selectedPatient.id,  // Garantir que o patientId está correto
+        ministerId: minister.id,       // Garantir que ministerId está correto
+      });
+  
+      // Invalida as consultas para garantir que o estado da UI seja atualizado
+      queryClient.invalidateQueries({
+        queryKey: ["appointments", selectedDate],
+      });
+  
+      // Mostrar uma confirmação ou mensagem
+      alert(result.message);  // Exemplo de feedback para o usuário
+    } catch (error) {
+      // Mostrar mensagem de erro
+      alert("Erro ao cancelar a visita. Tente novamente.");
+    }
+  
+    setIsDialogOpen(false);  // Fecha o diálogo após cancelar
+  };
+  
+
   return (
     <Layout>
       <PageHeader
@@ -93,10 +119,13 @@ const Appointment = () => {
       </div>
 
       <div className="mb-6">
-      <DatePicker
-  date={new Date(selectedDate)}
-  onChange={(newDate: Date) => setSelectedDate(newDate.toISOString().split("T")[0])}
-/>
+        <DatePicker
+          value={selectedDate} // aqui é uma string tipo "2025-04-10"
+          onChange={(date: Date) => {
+            const formatted = format(date, "yyyy-MM-dd");
+            setSelectedDate(formatted); // salva no estado como string
+          }}
+        />
       </div>
 
       {isLoading ? (
@@ -124,17 +153,22 @@ const Appointment = () => {
                 appointment={appointment}
                 currentMinisterName={minister.name}
                 onClick={() => handleSchedule(patient)}
+                handleCancelAppointment={handleCancelAppointment}
               />
             );
           })}
         </div>
       )}
 
-      {/* ConfirmDialog para agendar visita */}
       <ConfirmDialog
         open={isDialogOpen}
         title="Confirmar Agendamento"
-        description={`Deseja agendar visita para ${selectedPatient?.name} no dia ${selectedDate}?`}
+        description={`Deseja agendar visita para ${
+          selectedPatient?.name
+        } no dia ${format(
+          new Date(selectedDate + "T00:00:00"),
+          "dd/MM/yyyy"
+        )}?`}
         onClose={handleDialogClose}
         onConfirm={handleConfirmSchedule}
         colorConfirmar="success"
@@ -148,11 +182,13 @@ const PatientCard = ({
   appointment,
   currentMinisterName,
   onClick,
+  handleCancelAppointment, // Recebendo a função como prop
 }: {
   patient: Patient;
   appointment?: { minister_name: string };
   currentMinisterName: string;
   onClick: () => void;
+  handleCancelAppointment: (patientId: string) => void; // Tipagem da função
 }) => {
   const isScheduled = !!appointment;
 
@@ -195,6 +231,17 @@ const PatientCard = ({
               <div className="text-xs text-muted-foreground">
                 +{patient.phones.length - 1} telefone(s)
               </div>
+            )}
+            {isScheduled && (
+              <button
+                className="mt-2 text-red-600 text-xs"
+                onClick={(e) => {
+                  e.stopPropagation(); // Impede que o clique no botão se propague para o card
+                  handleCancelAppointment(patient.id); // Chamando a função passada como prop
+                }}
+              >
+                Cancelar Visita
+              </button>
             )}
           </div>
         </div>
